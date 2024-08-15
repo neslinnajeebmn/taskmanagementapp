@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import io
-import plotly.io as pio
 
 # Set the page configuration as the first Streamlit command
 st.set_page_config(layout="wide", page_title="Sales Data Dashboard")
@@ -113,19 +111,6 @@ if 'df' in locals():
         # Display plot
         plot_placeholder.plotly_chart(fig)
 
-        # Button to download plot as image
-        try:
-            img_bytes = io.BytesIO()
-            pio.write_image(fig, file=img_bytes, format='png')
-            st.download_button(
-                label="Download Plot as PNG",
-                data=img_bytes.getvalue(),
-                file_name='plot.png',
-                mime="image/png"
-            )
-        except Exception as e:
-            st.error(f"Error exporting plot as image: {e}")
-
     # Button to download filtered data
     csv = filtered_df.to_csv(index=False)
     st.download_button(
@@ -137,14 +122,3 @@ if 'df' in locals():
 
 else:
     st.write("Waiting for file upload or sample dataset selection...")
-
-
-
-
-
-
-
-
-
-
-
