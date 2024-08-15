@@ -2,8 +2,26 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+# Inject custom HTML to modify meta title and metadata
+st.markdown("""
+    <style>
+        .css-18e3th9 {visibility: hidden;}
+    </style>
+    <script>
+        const meta = document.createElement('meta');
+        meta.name = 'Neslcom Analytics';
+        meta.content = 'Data Analytics by Neslcom';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+
+        document.title = 'Neslcom Analytics';
+    </script>
+    """, unsafe_allow_html=True)
+
 # Set the page configuration as the first Streamlit command
-st.set_page_config(layout="wide", page_title="Sales Data Dashboard")
+st.set_page_config(
+    layout="wide",
+    page_title="Sales Data Dashboard"  # This sets the browser tab title
+)
 
 st.title("Sales Data Dashboard")
 
