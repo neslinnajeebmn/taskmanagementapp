@@ -6,10 +6,10 @@ import plotly.express as px
 # Set the page configuration as the first Streamlit command
 st.set_page_config(
     layout="wide",
-    page_title="Sales Data Dashboard"  # This sets the browser tab title
+    page_title="Neslcom Analytics"  # This sets the browser tab title
 )
 
-st.title("Sales Data Dashboard")
+st.title("Neslcom Data Dashboard")
 
 # Inject custom HTML to modify meta title and metadata
 st.markdown("""
