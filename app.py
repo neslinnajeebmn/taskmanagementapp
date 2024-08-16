@@ -11,11 +11,10 @@ st.set_page_config(
 )
 
 # Auth0 application details
-AUTH0_DOMAIN = 'YOUR_AUTH0_DOMAIN'
-CLIENT_ID = 'YOUR_CLIENT_ID'
-CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
-REDIRECT_URI = 'YOUR_REDIRECT_URI'  # E.g., https://app.neslcom.online/callback
-API_AUDIENCE = 'YOUR_API_IDENTIFIER'
+AUTH0_DOMAIN = 'dev-b7ps2b12l8twj4kx.us.auth0.com'
+CLIENT_ID = 'wOCGlDZYxIk17PgOE3xJ2HH0r0uHRpQ2'
+CLIENT_SECRET = 'gpQil0KlgZjwZfZI5gGFBD40aZ-FpHp17GNSiYfG9ipxSJXl9hMsqKLWTyS6mYXt'
+REDIRECT_URI = 'https://app.neslcom.online/callback'  # E.g., https://app.neslcom.online/callback
 PUBLIC_KEY_URL = f"https://{AUTH0_DOMAIN}/.well-known/jwks.json"
 
 def get_auth_url():
