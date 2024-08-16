@@ -5,10 +5,10 @@ import plotly.express as px
 # Set the page configuration
 st.set_page_config(
     layout="wide",
-    page_title="Your App Title"  # Customize the browser tab title
+    page_title="Neslcom Analytics"  # Customize the browser tab title
 )
 
-st.title("Your Data Dashboard Title")
+st.title("Neslcom Analytics")
 
 # Inject custom HTML to modify meta title and metadata
 st.markdown("""
@@ -17,16 +17,16 @@ st.markdown("""
     </style>
     <script>
         const meta = document.createElement('meta');
-        meta.name = 'Your App Meta Name';
-        meta.content = 'Your App Meta Description';
+        meta.name = 'Neslcom Analytics';
+        meta.content = 'Unlock powerful data insights with Neslcom Analytics. Easily upload, filter, and visualize your data for actionable results. Perfect for businesses seeking streamlined data analysis and decision-making.';
         document.getElementsByTagName('head')[0].appendChild(meta);
 
-        document.title = 'Your App Title';
+        document.title = 'Neslcom Analytics';
     </script>
     """, unsafe_allow_html=True)
 
 # Sample dataset URL
-sample_data_url = "YOUR_SAMPLE_DATASET_URL"
+sample_data_url = "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/tips.csv"
 
 # Sidebar for sample dataset option
 st.sidebar.header("Data Upload Options")
