@@ -2,14 +2,16 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import sqlite3
-from datetime import datetime, timedelta
-from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
+from streamlit_cookies_manager import CookiesManager
 
 # Set the page configuration
 st.set_page_config(
     layout="wide",
     page_title="Neslcom Analytics"
 )
+
+# Initialize cookie manager
+cookie_manager = CookiesManager()
 
 # Connect to the database
 conn = sqlite3.connect('users.db', check_same_thread=False)
@@ -39,17 +41,24 @@ def signup_user(username, password):
     except sqlite3.IntegrityError:
         return False  # Username already exists
 
-# Set cookie with expiration
-def set_cookie(key, value, expiry_days=1):
-    ctx = get_script_run_ctx()
-    cookie_manager = ctx._session_state.cookie_manager
-    cookie_manager.set(key, value, max_age=expiry_days*24*60*60)
-
-# Get cookie value
+# Function to get cookie value
 def get_cookie(key):
-    ctx = get_script_run_ctx()
-    cookie_manager = ctx._session_state.cookie_manager
-    return cookie_manager.get(key)
+    cookies = cookie_manager.get_all()
+    return cookies.get(key)
+
+# Function to set cookie value
+def set_cookie(key, value):
+    cookie_manager.set(key, value)
+    cookie_manager.save()  # Ensure cookies are saved
+
+# Function to check if the user is logged in
+def check_logged_in():
+    if 'logged_in' in st.session_state and st.session_state['logged_in']:
+        return True
+    elif get_cookie("logged_in") == "True":
+        st.session_state['logged_in'] = True
+        return True
+    return False
 
 # Main app function
 def main_app():
@@ -213,8 +222,8 @@ def login_signup():
             if check_login(username, password):
                 st.session_state.logged_in = True
                 st.session_state.username = username
-                set_cookie("logged_in", "True")
-                set_cookie("username", username)
+                set_cookie("logged_in", "True")  # Set logged_in cookie
+                set_cookie("username", username)  # Set username cookie
                 st.success(f"Welcome {username}!")
                 st.experimental_rerun()
             else:
@@ -234,16 +243,10 @@ def login_signup():
                 st.error("Username already exists. Try a different one.")
 
 # Check if user is logged in
-def check_logged_in():
-    if 'logged_in' in st.session_state:
-        return st.session_state.logged_in
-    elif get_cookie("logged_in") == "True":
-        st.session_state.logged_in = True
-        st.session_state.username = get_cookie("username")
-        return True
-    return False
-
-if check_logged_in():
-    main_app()
-else:
+if not check_logged_in():
     login_signup()
+else:
+    main_app()
+
+# Sync the cookies at the end of the script
+cookie_manager.sync()
