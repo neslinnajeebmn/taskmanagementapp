@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import sqlite3
+from datetime import datetime, timedelta
+from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
 
 # Set the page configuration
 st.set_page_config(
@@ -37,7 +39,19 @@ def signup_user(username, password):
     except sqlite3.IntegrityError:
         return False  # Username already exists
 
-# Function to redirect to main app
+# Set cookie with expiration
+def set_cookie(key, value, expiry_days=1):
+    ctx = get_script_run_ctx()
+    cookie_manager = ctx._session_state.cookie_manager
+    cookie_manager.set(key, value, max_age=expiry_days*24*60*60)
+
+# Get cookie value
+def get_cookie(key):
+    ctx = get_script_run_ctx()
+    cookie_manager = ctx._session_state.cookie_manager
+    return cookie_manager.get(key)
+
+# Main app function
 def main_app():
     st.title("Neslcom Analytics")
 
@@ -199,6 +213,8 @@ def login_signup():
             if check_login(username, password):
                 st.session_state.logged_in = True
                 st.session_state.username = username
+                set_cookie("logged_in", "True")
+                set_cookie("username", username)
                 st.success(f"Welcome {username}!")
                 st.experimental_rerun()
             else:
@@ -218,7 +234,16 @@ def login_signup():
                 st.error("Username already exists. Try a different one.")
 
 # Check if user is logged in
-if 'logged_in' not in st.session_state or not st.session_state.logged_in:
-    login_signup()
-else:
+def check_logged_in():
+    if 'logged_in' in st.session_state:
+        return st.session_state.logged_in
+    elif get_cookie("logged_in") == "True":
+        st.session_state.logged_in = True
+        st.session_state.username = get_cookie("username")
+        return True
+    return False
+
+if check_logged_in():
     main_app()
+else:
+    login_signup()
