@@ -29,7 +29,7 @@ st.title("Login Page")
 
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.subheader("Login")
-    username = st.text_input("Username")
+    username = st.text_input("Email")
     password = st.text_input("Password", type='password')
 
     if st.button("Login"):
@@ -38,10 +38,10 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
             st.session_state.username = username
             st.experimental_rerun()  # Redirect to main app
         else:
-            st.error("Invalid username or password")
+            st.error("Invalid email or password")
 
     st.subheader("Sign Up")
-    new_username = st.text_input("New Username")
+    new_username = st.text_input("New Username",placeholder="Email")
     new_password = st.text_input("New Password", type='password')
 
     if st.button("Sign Up"):
