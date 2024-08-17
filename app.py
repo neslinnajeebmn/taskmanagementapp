@@ -2,16 +2,12 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import sqlite3
-from streamlit_cookies_manager import CookiesManager
 
 # Set the page configuration
 st.set_page_config(
     layout="wide",
     page_title="Neslcom Analytics"
 )
-
-# Initialize cookie manager
-cookie_manager = CookiesManager()
 
 # Connect to the database
 conn = sqlite3.connect('users.db', check_same_thread=False)
@@ -21,44 +17,25 @@ c = conn.cursor()
 c.execute('''
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
+        email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL
     )
 ''')
 conn.commit()
 
 # Function to check login credentials
-def check_login(username, password):
-    c.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
+def check_login(email, password):
+    c.execute('SELECT * FROM users WHERE email = ? AND password = ?', (email, password))
     return c.fetchone() is not None
 
 # Function to sign up a new user
-def signup_user(username, password):
+def signup_user(email, password):
     try:
-        c.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
+        c.execute('INSERT INTO users (email, password) VALUES (?, ?)', (email, password))
         conn.commit()
         return True
     except sqlite3.IntegrityError:
-        return False  # Username already exists
-
-# Function to get cookie value
-def get_cookie(key):
-    cookies = cookie_manager.get_all()
-    return cookies.get(key)
-
-# Function to set cookie value
-def set_cookie(key, value):
-    cookie_manager.set(key, value)
-    cookie_manager.save()  # Ensure cookies are saved
-
-# Function to check if the user is logged in
-def check_logged_in():
-    if 'logged_in' in st.session_state and st.session_state['logged_in']:
-        return True
-    elif get_cookie("logged_in") == "True":
-        st.session_state['logged_in'] = True
-        return True
-    return False
+        return False  # Email already exists
 
 # Main app function
 def main_app():
@@ -215,38 +192,33 @@ def login_signup():
     if choice == "Login":
         st.subheader("Login Section")
 
-        username = st.text_input("Username")
+        email = st.text_input("Email")
         password = st.text_input("Password", type='password')
 
         if st.button("Login"):
-            if check_login(username, password):
+            if check_login(email, password):
                 st.session_state.logged_in = True
-                st.session_state.username = username
-                set_cookie("logged_in", "True")  # Set logged_in cookie
-                set_cookie("username", username)  # Set username cookie
-                st.success(f"Welcome {username}!")
+                st.session_state.email = email
+                st.success(f"Welcome {email}!")
                 st.experimental_rerun()
             else:
-                st.error("Incorrect Username/Password")
+                st.error("Incorrect Email/Password")
 
     elif choice == "Sign Up":
         st.subheader("Create New Account")
 
-        new_user = st.text_input("Username")
+        new_email = st.text_input("Email")
         new_password = st.text_input("Password", type='password')
 
         if st.button("Sign Up"):
-            if signup_user(new_user, new_password):
+            if signup_user(new_email, new_password):
                 st.success("Account created successfully!")
                 st.info("Go to Login Menu to log in")
             else:
-                st.error("Username already exists. Try a different one.")
+                st.error("Email already exists. Try a different one.")
 
 # Check if user is logged in
-if not check_logged_in():
-    login_signup()
-else:
+if 'logged_in' in st.session_state and st.session_state['logged_in']:
     main_app()
-
-# Sync the cookies at the end of the script
-cookie_manager.sync()
+else:
+    login_signup()
