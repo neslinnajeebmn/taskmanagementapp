@@ -5,7 +5,7 @@ import plotly.express as px
 # Set the page configuration
 st.set_page_config(
     layout="wide",
-    page_title="Neslcom Analytics"  # Customize the browser tab title
+    page_title="Neslcom Analytics"
 )
 
 st.title("Neslcom Analytics")
@@ -41,33 +41,29 @@ if st.sidebar.button("Load Sample Dataset"):
         st.success("Sample dataset loaded!")
     except Exception as e:
         st.error(f"Error loading sample dataset: {e}")
-else:
-    # File uploader for multiple files
-    uploaded_files = st.file_uploader("Choose CSV file(s)", type=["csv"], accept_multiple_files=True)
 
-    if uploaded_files:
-        dfs = []
-        for uploaded_file in uploaded_files:
-            try:
-                df_temp = pd.read_csv(uploaded_file)
-                dfs.append(df_temp)
-                st.success(f"{uploaded_file.name} successfully uploaded!")
-            except Exception as e:
-                st.error(f"Error loading file {uploaded_file.name}: {e}")
+# File uploader for multiple files
+uploaded_files = st.file_uploader("Choose CSV file(s)", type=["csv"], accept_multiple_files=True)
 
-        if dfs:
-            df = pd.concat(dfs, ignore_index=True)
-            st.session_state.df = df  # Store in session state
-        else:
-            st.session_state.df = None
-    else:
-        st.session_state.df = None
+if uploaded_files:
+    dfs = []
+    for uploaded_file in uploaded_files:
+        try:
+            df_temp = pd.read_csv(uploaded_file)
+            dfs.append(df_temp)
+            st.success(f"{uploaded_file.name} successfully uploaded!")
+        except Exception as e:
+            st.error(f"Error loading file {uploaded_file.name}: {e}")
+
+    if dfs:
+        df = pd.concat(dfs, ignore_index=True)
+        st.session_state.df = df  # Store in session state
 
 # Check if data is loaded
-if st.session_state.df is not None and not st.session_state.df.empty:
-    st.sidebar.header("Filter Options")
-
+if st.session_state.df is not None:
     df = st.session_state.df  # Load the dataset from session state
+
+    st.sidebar.header("Filter Options")
 
     st.subheader("Data Preview")
     st.write(df.head())
@@ -115,16 +111,12 @@ if st.session_state.df is not None and not st.session_state.df.empty:
     st.write(filtered_df)
 
     st.subheader("Plot Data")
-    x_column = st.selectbox("Select X-axis column", columns)
-    y_column = st.selectbox("Select Y-axis column", columns)
-    chart_type = st.selectbox("Select Chart Type",
-                              ["Line Chart", "Bar Chart", "Area Chart", "Scatter Plot", "Histogram"])
+    x_column = st.selectbox("Select X-axis column", columns, key='x_column')
+    y_column = st.selectbox("Select Y-axis column", columns, key='y_column')
+    chart_type = st.selectbox("Select Chart Type", ["Line Chart", "Bar Chart", "Area Chart", "Scatter Plot", "Histogram"], key='chart_type')
 
-    # Initialize a placeholder for the plot
-    plot_placeholder = st.empty()
-
-    try:
-        if st.button("Generate Plot"):
+    if st.button("Generate Plot"):
+        try:
             if chart_type == "Line Chart":
                 fig = px.line(filtered_df, x=x_column, y=y_column, title=f"{y_column} vs {x_column}")
             elif chart_type == "Bar Chart":
@@ -137,9 +129,9 @@ if st.session_state.df is not None and not st.session_state.df.empty:
                 fig = px.histogram(filtered_df, x=y_column, nbins=10, title=f"Histogram of {y_column}")
 
             # Display plot
-            plot_placeholder.plotly_chart(fig)
-    except Exception as e:
-        st.error(f"Error generating plot: {e}")
+            st.plotly_chart(fig)
+        except Exception as e:
+            st.error(f"Error generating plot: {e}")
 
     # Button to download filtered data
     try:
@@ -155,4 +147,3 @@ if st.session_state.df is not None and not st.session_state.df.empty:
 
 else:
     st.write("Waiting for file upload or sample dataset selection...")
-
