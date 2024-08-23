@@ -5,6 +5,7 @@ import pandas as pd
 # Set the page configuration
 st.set_page_config(
     page_title="Neslcom Calculator",
+    page_icon="neslcom.png",
     layout="wide",
 )
 

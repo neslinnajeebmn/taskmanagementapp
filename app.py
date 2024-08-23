@@ -6,7 +6,8 @@ import sqlite3
 # Set the page configuration
 st.set_page_config(
     layout="wide",
-    page_title="Neslcom Analytics"
+    page_title="Neslcom Analytics",
+    page_icon="neslcom.png"
 )
 
 # Connect to the database
