@@ -4,7 +4,7 @@ import pandas as pd
 
 # Set the page configuration
 st.set_page_config(
-    page_title="Digital Marketing Calculator",
+    page_title="Neslcom Calculator",
     layout="wide",
 )
 
@@ -14,7 +14,8 @@ st.title("Digital Marketing Calculator")
 # Sidebar with interactive navigation and enhanced description
 st.sidebar.title("Navigation")
 st.sidebar.write("""
-Welcome to the Digital Marketing Calculator. Use the button below to navigate to the Neslcom Analytics dashboard.
+Welcome to the Digital Marketing Calculator.
+Use the button below to navigate to the Neslcom Analytics dashboard.
 """)
 
 # Add custom HTML for redirect button with neutral color and white text
@@ -57,7 +58,7 @@ currency = st.selectbox(
     ]
 )
 
-st.write("### Input your digital marketing metrics")
+st.write("### Input your Ads metrics")
 
 # Inputs for calculations
 col1, col2 = st.columns(2)
