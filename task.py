@@ -145,6 +145,9 @@ def send_email_confirmation(email, name):
     except Exception as e:
         st.error(f"Failed to send email: {e}")
 
+# Display the logo in the sidebar
+st.sidebar.image("neslcom.png", use_column_width=True)
+
 # Initialize the app layout
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Select a page", ["Task Management", "Settings"])
