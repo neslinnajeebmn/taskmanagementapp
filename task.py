@@ -6,6 +6,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import pandas as pd
 
+st.set_page_config(
+    page_title="Neslcom Task Management",  # Title that will appear on the tab
+    page_icon="neslcom.png"  # Path to your favicon file
+)
+
 # Initialize SQLite database connection
 conn = sqlite3.connect('tasks.db', check_same_thread=False)
 c = conn.cursor()
@@ -145,8 +150,7 @@ def send_email_confirmation(email, name):
     except Exception as e:
         st.error(f"Failed to send email: {e}")
 
-# Display the logo in the sidebar
-st.sidebar.image("neslcom.png", use_column_width=True)
+
 
 # Initialize the app layout
 st.sidebar.title("Navigation")
